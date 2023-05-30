@@ -3,7 +3,7 @@ import chatbot from './chatbot.png';
 
 const sendQuestion = async (question) => {
   const response = await fetch(
-    'https://code-penal-fr.onrender.com/api/v1/prediction/43c52b44-d424-48ba-b912-4ca584f4880b',
+    'https://code-penal-fr.onrender.com/api/v1/prediction/1cfac65f-3c7d-4615-8682-09fb5e76ddd3',
     {
       method: 'POST',
       headers: {
