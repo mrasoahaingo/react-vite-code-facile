@@ -12,3 +12,13 @@ html {
 body {
   margin: 0;
 }
+
+@layer utilities {
+  .peer\/menu:checked + div #line {
+    @apply rotate-45 translate-y-1.5;
+  }
+
+  .peer\/menu:checked + div #line2 {
+    @apply -rotate-45 -translate-y-1;
+  }
+}

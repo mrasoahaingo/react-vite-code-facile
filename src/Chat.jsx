@@ -25,6 +25,7 @@ export const Chat = () => {
       message:
         'Bonjour ! Posez votre question dans le champ de saisi ci-dessous. Jessaierai de répondre du mieux que je peux !',
       date: new Date(),
+      role: 'bot',
     },
   ]);
   const [question, setQuestion] = useState('');
@@ -39,11 +40,21 @@ export const Chat = () => {
 
     if (isLoading) return;
 
+    setQuestion('');
     setLoading(true);
+
+    setMessages((messages) => [
+      ...messages,
+      { message: question, date: new Date(), role: 'user' },
+    ]);
 
     const message = await sendQuestion(question);
 
-    setMessages((messages) => [...messages, { message, date: new Date() }]);
+    setMessages((messages) => [
+      ...messages,
+      { message, date: new Date(), role: 'bot' },
+    ]);
+
     setLoading(false);
     setQuestion('');
   };
@@ -51,16 +62,31 @@ export const Chat = () => {
   return (
     <>
       <div className="mt-16">
-        {messages.map(({ message, date }, i) => (
+        {messages.map(({ message, date, role }) => (
           <div
-            className="overflow-hidden px-5 bg-white shadow sm:rounded-lg flex justify-between gap-x-6 py-5 my-8"
-            key={i}
+            className="overflow-hidden px-5 rounded-xl bg-white shadow sm:rounded-lg flex justify-between gap-x-6 py-5 my-8"
+            key={date}
           >
             <div class="flex gap-x-6 text-left">
-              <img src={chatbot} className="h-12 w-12" />
+              {role === 'bot' ? (
+                <img src={chatbot} className="h-12 w-12" />
+              ) : (
+                <svg
+                  className="h-12 w-12 text-gray-300"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              )}
               <div class="min-w-0 flex-auto">
                 <div class="text-sm font-semibold text-gray-900">
-                  Code Facile Bot
+                  {role === 'bot' ? 'Code Facile Bot' : 'You'}
                 </div>
                 <div class="mt-1 text-sm text-gray-500">
                   {message.split('\\n').map((str) => (
@@ -152,7 +178,7 @@ export const Chat = () => {
               disabled={isLoading}
               id="chat"
               rows="1"
-              className="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg borderxz focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="block mx-4 p-2.5 w-full text-sm rounded-lg borderxz bg-gray-800 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
               placeholder="Poser votre question..."
               value={question}
               onChange={onChange}
@@ -160,7 +186,7 @@ export const Chat = () => {
             <button
               disabled={isLoading}
               type="submit"
-              className="absolute left-full inline-flex justify-center p-2 text-white rounded-full cursor-pointer hover:bg-blue-100 dark:text-white dark:hover:bg-gray-600"
+              className="absolute left-full inline-flex justify-center p-2 text-white rounded-full cursor-pointer hover:bg-gray-600"
             >
               <svg
                 className="w-6 h-6 rotate-90"
